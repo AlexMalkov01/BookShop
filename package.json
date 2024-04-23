@@ -1,0 +1,23 @@
+{
+  "name": "bookstoore",
+  "version": "1.0.0",
+  "description": "book",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "build": "rollup -c --watch"
+  },
+  "author": "Alex Malkov",
+  "license": "ISC",
+  "devDependencies": {
+    "@eslint/js": "^9.0.0",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "eslint": "^9.0.0",
+    "globals": "^15.0.0",
+    "rollup": "^4.14.3",
+    "rollup-plugin-import-css": "^3.5.0"
+  },
+  "dependencies": {
+    "on-change": "^5.0.1"
+  }
+}
