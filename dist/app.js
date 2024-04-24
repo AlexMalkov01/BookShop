@@ -1130,9 +1130,58 @@
         <div>
         <img  src="../static/header_logo.png" alt="" />
         </div>
+        <div class ="menu">
+         <a class="menu__link" href="#search" >
+         <img src="/static/icon_search.png" class="menu_search">   
+         Поиск книг
+         </a>
+         <a class="menu__link" href="#favorites">
+         <img src="/static/favorite_icon.png">
+         Избаранное
+         </a>
+         <div class="menu__counter">
+         ${this.appState.favorites.length}
+         </div>
+        </div>
         `;
 	        return this.elemnt
 	     }
+	}
+
+	class Search extends DivComponent {
+
+	    constructor(state){
+	        super();
+	        this.state = state;
+	    }
+
+	    onSearch(){
+	        const value = document.querySelector("input").value;
+	        this.state.searchValue = value;
+	    }
+
+	    render () {
+	        this.elemnt.innerHTML = "";
+	        this.elemnt.classList.add("search");
+	        this.elemnt.innerHTML = `
+        <div class="search__wrapper">
+        <img src="/static/search_input.svg" class="aicon__input" />
+        <input 
+        value="${this.state.searchValue ?? ""}"
+        type="text" 
+        placeholder="Найти книгу или автора....">
+        <button class="search__button">
+        <img src="../../../static/search_button.svg">
+        </button>
+        </div>
+        `;
+	        this.elemnt.querySelector(".search__button").addEventListener("click", this.onSearch.bind(this));
+	        this.elemnt.querySelector("input").addEventListener("keydown", (event)=>{
+	            if(event.code === "Enter")this.onSearch();
+	        });
+	        return this.elemnt
+	    }
+	    
 	}
 
 	class MainPage extends AbstractPage {
@@ -1149,6 +1198,7 @@
 	        this.setTitle("Главная странница");
 	        this.appState = appState;
 	        this.appState = onChange(this.appState , this.appStateHook.bind(this));
+	        this.state = onChange(this.state, this.searchHook.bind(this));
 	    }
 
 	    appStateHook(path) {
@@ -1157,18 +1207,34 @@
 	        }
 	    }
 
+	    async searchHook(path) {
+	        if (path === "searchValue") {
+	            console.log(path);
+	        }
+	    }
+
+	    async getBookList (searchValue,offset) {
+	        await fetch("https://");
+	    }
+
 	    render() {
 	        this.app.innerHTML = "";
 	        const main = document.createElement("div");
+	        const searchComponent = new Search(this.state).render();
 	        main.innerHTML = `Главная странница`;
-	        this.app.append(main);
+	        main.append(searchComponent);
 	        this.renderHaeder();
+	        this.app.append(main);
 	    }
 
 	    renderHaeder() {
 	        const header = new Header(this.appState).render();
+	        console.log(header);
 	        this.app.prepend(header);
 	    }
+
+	   
+
 	}
 
 	class NotFoundPage extends AbstractPage {

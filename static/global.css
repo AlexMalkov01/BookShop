@@ -1,5 +1,7 @@
 :root {
     --black-color: black;
+    --bacgreum-ipput: rgb(222, 222, 222);
+
 }
 
 
@@ -7,8 +9,14 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: Open Sans;
 }
 
 body {
     color: var(--black-color);
+}
+
+#root {
+    max-width: 1600px;
+    margin: 0 auto;
 }

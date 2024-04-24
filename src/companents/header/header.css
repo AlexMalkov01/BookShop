@@ -1,3 +1,44 @@
 .header {
     padding: 30px 35px 40px 35px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.menu {
+    display: flex;
+    gap: 30px;
+}
+
+.menu__link {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--black-color);
+    text-decoration: none;
+
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+}
+
+.menu__counter {
+    padding: 4px 9px;
+    
+    border-radius: 50px;
+    border: 1px solid var(--black-color);
+
+    font-size: 12px;
+    font-weight: 600;
+
+}
+
+.menu__link:hover {
+    font-weight: 700;
+}
+
+.menu_search {
+    width: 15px;
+    height: 15px;
 }
