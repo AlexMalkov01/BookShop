@@ -24,7 +24,7 @@ export class MainPage extends AbstractPage {
     }
     
     state = {
-        bookList: [1,2],
+        bookList: [],
         isLoading: false,
         searchValue: "",
         offset:null,
