@@ -91,3 +91,10 @@
 
     cursor: pointer;
 }
+.cardList {
+    margin-top: 30px;
+}
+
+.none {
+    display: none;
+}
