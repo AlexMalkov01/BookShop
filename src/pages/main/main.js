@@ -67,11 +67,11 @@ export class MainPage extends AbstractPage {
         const main = document.createElement("div")
         const cardList = new CardList (this.state).render();
         const searchComponent = new Search(this.state).render();
-        const card = new Card(this.state);
+        const card = new Card(this.state, this.appState).render();
         main.innerHTML = `Главная странница`
         main.append(searchComponent)
         main.append(cardList)
-        // main.append(card)
+        main.append(card)
         this.renderHaeder()
         this.app.append(main)
     }

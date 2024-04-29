@@ -1207,17 +1207,55 @@
 
 	class Card extends DivComponent {
 
-	     constructor (bookList) {
+	     constructor (state,appState) {
 	        super();
-	        this.bookList = bookList;
+	        this.state = state;
+	        this.appState = appState;
 	     }  
 	     
 	    render () {
-	        this.elemnt.innerHTML = ""; 
+	        this.elemnt.innerHTML = "";
+	        this.elemnt.classList.add("card_wrapper");
+	        
+	        for (let book of this.state.bookList) {
 
-	        for (let book of this.bookList) {
-	            console.log(book.title);
+	            const isFovarites = this.appState.favorites.find((el)=> el.key === book.key);
+
+	            const card = document.createElement("div");
+	            card.classList.add("card");
+	            card.innerHTML = `
+            <div class="img_wrap">
+            <img src="https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg" />
+            </div>
+            <div class="title__card">
+
+            <div class="janre__card">
+            ${book.subject?.slice(0,2)?.join(" & ") ?? "Не задано"}
+            </div>
+            
+            <div class="name_title__card">
+            ${book.title}
+            </div>
+            <div class="auther__card">
+            ${book.author_name?.slice(0,1)?.join(" ")?? "Неизвестный"}
+            </div>
+
+            <button ${isFovarites ? 
+            `class="btn-white"`:
+            ""
+        }>
+            ${isFovarites ? 
+
+            '<img src="/static/btn-icon--black.svg">' 
+            :'<img src="/static/btn-icon--black.svg">'}
+
+            </button>
+            
+            </div>
+            `;
+	            this.elemnt.append(card);
 	        }
+
 	    return this.elemnt
 	     }
 
@@ -1235,7 +1273,7 @@
 	    }
 	    
 	    state = {
-	        bookList: [1,2],
+	        bookList: [],
 	        isLoading: false,
 	        searchValue: "",
 	        offset:null,
@@ -1278,11 +1316,11 @@
 	        const main = document.createElement("div");
 	        const cardList = new CardList (this.state).render();
 	        const searchComponent = new Search(this.state).render();
-	        new Card(this.state);
+	        const card = new Card(this.state, this.appState).render();
 	        main.innerHTML = `Главная странница`;
 	        main.append(searchComponent);
 	        main.append(cardList);
-	        // main.append(card)
+	        main.append(card);
 	        this.renderHaeder();
 	        this.app.append(main);
 	    }

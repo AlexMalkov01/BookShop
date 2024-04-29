@@ -36,6 +36,8 @@
 
 .menu__link:hover {
     font-weight: 700;
+
+    transition: 0.5s;
 }
 
 .menu_search {
