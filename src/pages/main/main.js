@@ -69,7 +69,6 @@ export class MainPage extends AbstractPage {
         const cardList = new CardList (this.state).render();
         const searchComponent = new Search(this.state).render();
         const card = new Card(this.state, this.appState).render();
-        main.innerHTML = `Главная странница`
         main.append(searchComponent)
         main.append(cardList)
         main.append(card)
