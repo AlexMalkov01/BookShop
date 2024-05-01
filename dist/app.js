@@ -1106,6 +1106,18 @@
 	    unmont(){
 	        return;
 	    }
+
+	    setFavorites(){
+	        const key = "Alex";
+	        const favoritesString = JSON.stringify({favorites: this.appState.favorites});
+	        localStorage.setItem(key, favoritesString);
+	    } 
+
+	    getFavorites() {
+	        const key = "Alex";     
+	        return JSON.parse(localStorage.getItem(key))
+	    }
+
 	}
 
 	class DivComponent {
@@ -1131,7 +1143,7 @@
         <img  src="../static/header_logo.png" alt="" />
         </div>
         <div class ="menu">
-         <a class="menu__link" href="#search" >
+         <a class="menu__link" href="/" >
          <img src="/static/icon_search.png" class="menu_search">   
          Поиск книг
          </a>
@@ -1338,17 +1350,7 @@
 	        this.app.prepend(header);
 	    }
 
-	    setFavorites(){
-	        const key = "Alex";
-	        const favoritesString = JSON.stringify({favorites: this.appState.favorites});
-	        localStorage.setItem(key, favoritesString);
-	    } 
-
-	    getFavorites() {
-	        const key = "Alex";     
-	        return JSON.parse(localStorage.getItem(key))
-	    }
-
+	  
 	}
 
 	class NotFoundPage extends AbstractPage {
@@ -1397,25 +1399,13 @@
 	        console.log(header);
 	        this.app.prepend(header);
 	    }
-
-	    setFavorites(){
-	        const key = "Alex";
-	        const favoritesString = JSON.stringify({favorites: this.appState.favorites});
-	        localStorage.setItem(key, favoritesString);
-	    } 
-
-	    getFavorites() {
-	        const key = "Alex";     
-	        return JSON.parse(localStorage.getItem(key))
-	    }
-
 	}
 
 	class App {
 
 	    routes = [
 	        {
-	            path: "#search",
+	            path: "",
 	            page: MainPage,
 	        },
 	        {

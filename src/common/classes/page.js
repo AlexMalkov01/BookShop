@@ -16,4 +16,16 @@ export class AbstractPage {
     unmont(){
         return;
     }
+
+    setFavorites(){
+        const key = "Alex";
+        const favoritesString = JSON.stringify({favorites: this.appState.favorites});
+        localStorage.setItem(key, favoritesString);
+    } 
+
+    getFavorites() {
+        const key = "Alex";     
+        return JSON.parse(localStorage.getItem(key))
+    }
+
 }

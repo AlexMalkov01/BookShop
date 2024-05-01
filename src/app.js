@@ -7,7 +7,7 @@ class App {
 
     routes = [
         {
-            path: "#search",
+            path: "",
             page: MainPage,
         },
         {

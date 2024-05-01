@@ -17,7 +17,7 @@ export class Header extends DivComponent {
         <img  src="../static/header_logo.png" alt="" />
         </div>
         <div class ="menu">
-         <a class="menu__link" href="#search" >
+         <a class="menu__link" href="/" >
          <img src="/static/icon_search.png" class="menu_search">   
          Поиск книг
          </a>
