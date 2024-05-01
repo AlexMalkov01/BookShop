@@ -18,7 +18,7 @@ export class MainPage extends AbstractPage {
     constructor (appState){
         super()
         this.setTitle("Главная странница");
-        this.appState = appState
+        this.appState = this.getFavorites () ?? appState
         this.appState = onChange(this.appState , this.appStateHook.bind(this))
         this.state = onChange(this.state, this.searchHook.bind(this))
     }
@@ -32,6 +32,7 @@ export class MainPage extends AbstractPage {
 
     appStateHook(path) {
         if (path === "favorites"){
+            this.setFavorites()
             this.render()
         }
 
@@ -82,6 +83,15 @@ export class MainPage extends AbstractPage {
         this.app.prepend(header)
     }
 
-   
+    setFavorites(){
+        const key = "Alex";
+        const favoritesString = JSON.stringify({favorites: this.appState.favorites});
+        localStorage.setItem(key, favoritesString);
+    } 
+
+    getFavorites() {
+        const key = "Alex";     
+        return JSON.parse(localStorage.getItem(key))
+    }
 
 }

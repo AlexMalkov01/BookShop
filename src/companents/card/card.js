@@ -9,7 +9,7 @@ export class Card extends DivComponent {
         this.state = state
         this.appState = appState
      }  
-     
+   
     render () {
         this.elemnt.innerHTML = "";
         this.elemnt.classList.add("card_wrapper");
@@ -37,22 +37,28 @@ export class Card extends DivComponent {
             ${book.author_name?.slice(0,1)?.join(" ")?? "Неизвестный"}
             </div>
 
-            <button ${isFovarites ? 
-            `class="btn-white"`:
-            ""
-        }>
-            ${isFovarites ? 
-
-            '<img src="/static/btn-icon--black.svg">' 
-            :'<img src="/static/btn-icon--black.svg">'}
+            <button ${isFovarites ?`class="btn-white"`:`class="btn-black"`}>
+            ${isFovarites ?'<img src="/static/favorite--black.svg" />' 
+            :'<img src="/static/favorite--white.svg" />'}
 
             </button>
             
             </div>
             `
+
+            const addButton = card.querySelector("button");
+            addButton.addEventListener("click", () => {
+                if (isFovarites) {
+                    this.appState.favorites = this.appState.favorites.filter(el => el.key !== book.key)
+                    return 
+                }
+                this.appState.favorites.push(book);
+            });
+
+
             this.elemnt.append(card)
         }
-
+        console.log(this.appState.favorites); 
     return this.elemnt
      }
 

@@ -1,13 +1,18 @@
 import { MainPage } from "./pages/main/main.js";
 import { NotFoundPage } from "./pages/not-found/not-found.js"
+import { Favorites } from "./pages/favorites/favorites.js";
 
 
 class App {
 
     routes = [
         {
-            path: "",
+            path: "#search",
             page: MainPage,
+        },
+        {
+            path: "#favorites",
+            page: Favorites,
         }
     ]
 

@@ -71,7 +71,7 @@
     line-height: 15px;
 }
 
-.title__card button {
+.btn-black {
     margin-top: 20px;
 
     width: 36px;
@@ -90,8 +90,25 @@
     cursor: pointer;
 }
 
-.btn-white {
-    background-color: var(--white-color);
+    .btn-white {
+        margin-top: 20px;
+
+        width: 36px;
+        height: 32px;
+    
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    
+        background: none;
+    
+        border: 1px solid var(--black-color);
+        border-radius: 6px;
+        overflow: hidden;
+
+        background: var(--white-color);
+    
+        cursor: pointer;
 }
 
 @media (max-width: 1300px) {

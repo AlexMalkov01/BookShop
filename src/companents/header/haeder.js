@@ -26,7 +26,7 @@ export class Header extends DivComponent {
          Избаранное
          </a>
          <div class="menu__counter">
-         ${this.appState.favorites.length}
+         ${this.appState.favorites.length ? this.appState.favorites.length : "0"}
          </div>
         </div>
         `

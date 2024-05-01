@@ -1140,7 +1140,7 @@
          Избаранное
          </a>
          <div class="menu__counter">
-         ${this.appState.favorites.length}
+         ${this.appState.favorites.length ? this.appState.favorites.length : "0"}
          </div>
         </div>
         `;
@@ -1212,7 +1212,7 @@
 	        this.state = state;
 	        this.appState = appState;
 	     }  
-	     
+	   
 	    render () {
 	        this.elemnt.innerHTML = "";
 	        this.elemnt.classList.add("card_wrapper");
@@ -1240,22 +1240,28 @@
             ${book.author_name?.slice(0,1)?.join(" ")?? "Неизвестный"}
             </div>
 
-            <button ${isFovarites ? 
-            `class="btn-white"`:
-            ""
-        }>
-            ${isFovarites ? 
-
-            '<img src="/static/btn-icon--black.svg">' 
-            :'<img src="/static/btn-icon--black.svg">'}
+            <button ${isFovarites ?`class="btn-white"`:`class="btn-black"`}>
+            ${isFovarites ?'<img src="/static/favorite--black.svg" />' 
+            :'<img src="/static/favorite--white.svg" />'}
 
             </button>
             
             </div>
             `;
+
+	            const addButton = card.querySelector("button");
+	            addButton.addEventListener("click", () => {
+	                if (isFovarites) {
+	                    this.appState.favorites = this.appState.favorites.filter(el => el.key !== book.key);
+	                    return 
+	                }
+	                this.appState.favorites.push(book);
+	            });
+
+
 	            this.elemnt.append(card);
 	        }
-
+	        console.log(this.appState.favorites); 
 	    return this.elemnt
 	     }
 
@@ -1267,7 +1273,7 @@
 	    constructor (appState){
 	        super();
 	        this.setTitle("Главная странница");
-	        this.appState = appState;
+	        this.appState = this.getFavorites () ?? appState;
 	        this.appState = onChange(this.appState , this.appStateHook.bind(this));
 	        this.state = onChange(this.state, this.searchHook.bind(this));
 	    }
@@ -1281,6 +1287,7 @@
 
 	    appStateHook(path) {
 	        if (path === "favorites"){
+	            this.setFavorites();
 	            this.render();
 	        }
 
@@ -1331,7 +1338,16 @@
 	        this.app.prepend(header);
 	    }
 
-	   
+	    setFavorites(){
+	        const key = "Alex";
+	        const favoritesString = JSON.stringify({favorites: this.appState.favorites});
+	        localStorage.setItem(key, favoritesString);
+	    } 
+
+	    getFavorites() {
+	        const key = "Alex";     
+	        return JSON.parse(localStorage.getItem(key))
+	    }
 
 	}
 
@@ -1345,12 +1361,66 @@
 	    }
 	}
 
+	class Favorites extends AbstractPage {
+
+	    
+	    constructor (appState){
+	        super();
+	        this.setTitle("favorites");
+	        this.appState = this.getFavorites () ?? appState;
+	        this.appState = onChange(this.appState , this.appStateHook.bind(this));
+	    }
+	    
+	    appStateHook(path) {
+	        if (path === "favorites"){
+	            this.setFavorites();
+	            this.render();
+	        }
+
+	    }
+
+
+	    render() {
+	        this.app.innerHTML = "";
+	        const main = document.createElement("div");
+	        const card = new Card( { bookList: this.appState.favorites } , this.appState).render();
+	        main.innerHTML = `<h1>
+        Избранные книги
+        </h1>`;
+	        main.append(card);
+	        this.renderHaeder();
+	        this.app.append(main);
+	    }
+
+	    renderHaeder() {
+	        const header = new Header(this.appState).render();
+	        console.log(header);
+	        this.app.prepend(header);
+	    }
+
+	    setFavorites(){
+	        const key = "Alex";
+	        const favoritesString = JSON.stringify({favorites: this.appState.favorites});
+	        localStorage.setItem(key, favoritesString);
+	    } 
+
+	    getFavorites() {
+	        const key = "Alex";     
+	        return JSON.parse(localStorage.getItem(key))
+	    }
+
+	}
+
 	class App {
 
 	    routes = [
 	        {
-	            path: "",
+	            path: "#search",
 	            page: MainPage,
+	        },
+	        {
+	            path: "#favorites",
+	            page: Favorites,
 	        }
 	    ]
 
