@@ -19,13 +19,8 @@ export class AbstractPage {
 
     setFavorites(){
         const key = "Alex";
-        const favoritesString = JSON.stringify({favorites: this.appState.favorites});
-        localStorage.setItem(key, favoritesString);
+        const favoritesString = JSON.stringify(this.appState.favorites) 
+        localStorage.setItem(key, favoritesString)
     } 
-
-    getFavorites() {
-        const key = "Alex";     
-        return JSON.parse(localStorage.getItem(key))
-    }
 
 }

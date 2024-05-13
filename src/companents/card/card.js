@@ -9,21 +9,24 @@ export class Card extends DivComponent {
         this.state = state
         this.appState = appState
      }  
-   
+
     render () {
         this.elemnt.innerHTML = "";
         this.elemnt.classList.add("card_wrapper");
         
         for (let book of this.state.bookList) {
+            
 
             const isFovarites = this.appState.favorites.find((el)=> el.key === book.key)
 
             const card = document.createElement("div")
             card.classList.add("card")
             card.innerHTML = `
+            <a  href="#AbautPage">
             <div class="img_wrap">
             <img src="https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg" />
             </div>
+            </a>
             <div class="title__card">
 
             <div class="janre__card">
@@ -47,7 +50,7 @@ export class Card extends DivComponent {
             `
 
             const addButton = card.querySelector("button");
-            addButton.addEventListener("click", () => {
+            addButton.addEventListener("click", () => { 
                 if (isFovarites) {
                     this.appState.favorites = this.appState.favorites.filter(el => el.key !== book.key)
                     return 
@@ -55,10 +58,13 @@ export class Card extends DivComponent {
                 this.appState.favorites.push(book);
             });
 
+           
+            card.querySelector("a").addEventListener("click",()=> {
+            this.appState.searchBookId = book.edition_key[0]
+            })
 
             this.elemnt.append(card)
         }
-        console.log(this.appState.favorites); 
     return this.elemnt
      }
 

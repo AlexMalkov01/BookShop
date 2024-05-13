@@ -13,8 +13,9 @@ export class Favorites extends AbstractPage {
     constructor (appState){
         super()
         this.setTitle("favorites");
-        this.appState = this.getFavorites () ?? appState
+        this.appState = appState
         this.appState = onChange(this.appState , this.appStateHook.bind(this))
+        console.log(appState);
     }
     
     appStateHook(path) {

@@ -1109,14 +1109,9 @@
 
 	    setFavorites(){
 	        const key = "Alex";
-	        const favoritesString = JSON.stringify({favorites: this.appState.favorites});
+	        const favoritesString = JSON.stringify(this.appState.favorites); 
 	        localStorage.setItem(key, favoritesString);
 	    } 
-
-	    getFavorites() {
-	        const key = "Alex";     
-	        return JSON.parse(localStorage.getItem(key))
-	    }
 
 	}
 
@@ -1152,7 +1147,7 @@
          Избаранное
          </a>
          <div class="menu__counter">
-         ${this.appState.favorites.length ? this.appState.favorites.length : "0"}
+         ${this.appState.favorites.length ? this.appState.favorites.length : "0"} 
          </div>
         </div>
         `;
@@ -1203,13 +1198,14 @@
 	        this.state = state; 
 	     }   
 
-	     render () {
+	     render () { 
+
 	        this.elemnt.innerHTML = "";
 	        this.elemnt.classList.add("cardList");
 	        this.elemnt.innerHTML = `
         <h1>
-        Количество книг -
-        <span class="load__res">${this.state.bookList.length}</span>
+        
+        <span class="load__res">Количество книг -  ${this.state.bookList.length}</span>
         <span class="load__activ none">Загрузка...</span>
         </h1>
         `;
@@ -1224,21 +1220,24 @@
 	        this.state = state;
 	        this.appState = appState;
 	     }  
-	   
+
 	    render () {
 	        this.elemnt.innerHTML = "";
 	        this.elemnt.classList.add("card_wrapper");
 	        
 	        for (let book of this.state.bookList) {
+	            
 
 	            const isFovarites = this.appState.favorites.find((el)=> el.key === book.key);
 
 	            const card = document.createElement("div");
 	            card.classList.add("card");
 	            card.innerHTML = `
+            <a  href="#AbautPage">
             <div class="img_wrap">
             <img src="https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg" />
             </div>
+            </a>
             <div class="title__card">
 
             <div class="janre__card">
@@ -1262,7 +1261,7 @@
             `;
 
 	            const addButton = card.querySelector("button");
-	            addButton.addEventListener("click", () => {
+	            addButton.addEventListener("click", () => { 
 	                if (isFovarites) {
 	                    this.appState.favorites = this.appState.favorites.filter(el => el.key !== book.key);
 	                    return 
@@ -1270,13 +1269,64 @@
 	                this.appState.favorites.push(book);
 	            });
 
+	           
+	            card.querySelector("a").addEventListener("click",()=> {
+	            this.appState.searchBookId = book.edition_key[0];
+	            });
 
 	            this.elemnt.append(card);
 	        }
-	        console.log(this.appState.favorites); 
 	    return this.elemnt
 	     }
 
+	}
+
+	class Pagination extends DivComponent {
+
+	     constructor (state) {
+	        super();
+	        this.state = state; 
+	     }
+	     
+	     #addOffset() {
+	        this.state.offset+=8;
+	     }
+
+	     #remuveOffset() {
+	        this.state.offset-=8;
+	     }
+
+	     render () { 
+
+	        this.elemnt.innerHTML = "";
+	        this.elemnt.classList.add("pagination");
+	        this.elemnt.innerHTML = `
+        <button class="btn-reviy">
+        <img src="/static/pagination--left.svg">
+        Предыдущая страница
+        </button>
+        <button class="btn-next">
+        Следующая страница
+        <img src="/static/pagination--right.svg">
+        </button>
+        
+        `;
+	        if (this.state.offset <= 0) {
+	            this.elemnt.querySelector(".btn-reviy").classList.add("none");
+	            this.elemnt.classList.add("flex-end");
+	        } 
+	        
+	        if (this.state.bookList.length < 8)  {
+	         this.elemnt.querySelector(".btn-next").classList.add("none");
+	        }
+	        
+	        
+	        this.elemnt.querySelector(".btn-reviy").addEventListener("click", () => this.#remuveOffset());
+
+	        this.elemnt.querySelector(".btn-next").addEventListener("click", () => this.#addOffset());
+
+	        return this.elemnt
+	     }
 	}
 
 	class MainPage extends AbstractPage {
@@ -1285,20 +1335,22 @@
 	    constructor (appState){
 	        super();
 	        this.setTitle("Главная странница");
-	        this.appState = this.getFavorites () ?? appState;
+	        this.appState = appState; 
 	        this.appState = onChange(this.appState , this.appStateHook.bind(this));
 	        this.state = onChange(this.state, this.searchHook.bind(this));
+	        console.log(this.appState);
 	    }
 	    
 	    state = {
 	        bookList: [],
 	        isLoading: false,
 	        searchValue: "",
-	        offset:null,
+	        offset:0,
+	        limit:8,
 	    }
 
 	    appStateHook(path) {
-	        if (path === "favorites"){
+	        if (path === "favorites" || path === "searchBookId"){
 	            this.setFavorites();
 	            this.render();
 	        }
@@ -1307,16 +1359,20 @@
 
 	    async searchHook(path) {
 	        if (path === "searchValue") {    
-
+	            this.state.offset = 0;
 
 	            document.querySelector(".load__res").classList.add("none");
 	            document.querySelector(".load__activ").classList.remove("none");
 
-	                const data = await this.getBookList(this.state.searchValue);
+	                const data = await this.getBookList(this.state.searchValue,this.state.offset,this.state.limit);
 	                const dataRes = data.docs; 
-	                this.state.bookList =  dataRes; 
 
-	                console.log(dataRes);
+	                this.state.bookList =  dataRes; 
+	        } else if (path === "offset") {
+	                const data = await this.getBookList(this.state.searchValue,this.state.offset,this.state.limit);
+	                const dataRes = data.docs; 
+
+	                this.state.bookList =  dataRes; 
 	        }
 
 	         if (path === "bookList"){
@@ -1325,8 +1381,8 @@
 
 	    }
 
-	    async getBookList (searchValue) {
-	        const getData = await fetch(`https://openlibrary.org/search.json?q=${searchValue}`);
+	    async getBookList (searchValue,offset,limit) {
+	        const getData = await fetch(`https://openlibrary.org/search.json?q=${searchValue}&offset=${offset}&limit=${limit}`);
 	        return getData.json()
 	    }
 
@@ -1336,20 +1392,24 @@
 	        const cardList = new CardList (this.state).render();
 	        const searchComponent = new Search(this.state).render();
 	        const card = new Card(this.state, this.appState).render();
+	        const pagination = new Pagination (this.state).render();
 	        main.append(searchComponent);
 	        main.append(cardList);
 	        main.append(card);
+
+	        if (this.state.bookList.length) {
+	            main.append(pagination);
+	        }
+	       
 	        this.renderHaeder();
 	        this.app.append(main);
 	    }
 
 	    renderHaeder() {
 	        const header = new Header(this.appState).render();
-	        console.log(header);
 	        this.app.prepend(header);
 	    }
-
-	  
+	    
 	}
 
 	class NotFoundPage extends AbstractPage {
@@ -1368,8 +1428,9 @@
 	    constructor (appState){
 	        super();
 	        this.setTitle("favorites");
-	        this.appState = this.getFavorites () ?? appState;
+	        this.appState = appState;
 	        this.appState = onChange(this.appState , this.appStateHook.bind(this));
+	        console.log(appState);
 	    }
 	    
 	    appStateHook(path) {
@@ -1400,6 +1461,72 @@
 	    }
 	}
 
+	class AbautPage extends AbstractPage {
+
+	    state = {
+	        book:null,
+	        isLoading: false,
+	    }
+
+	    
+	    constructor (appState){
+	        super();
+	        this.setTitle("abautPage");
+	        this.appState = appState;
+	        this.appState = onChange(this.appState , this.appStateHook.bind(this));
+	        this.state = onChange(this.state, this.steteHook.bind(this));
+	        console.log(this.appState);
+	        this.#setBookData();
+	    }
+	    
+	    appStateHook(path) {
+	        if (path === "favorites"){
+	            this.setFavorites();
+	            this.render();
+	        }
+
+	    }
+
+	    steteHook(path) {
+	        if (path === "isLoading") {
+	            this.render();
+	        }
+	    }
+
+	    async #setBookData() {
+	        this.state.isLoading = true;
+	        const book = await this.#loadBook();
+	        this.state.book = book;
+	        this.state.isLoading = false;
+	    }
+
+	    async #loadBook() {
+	        console.log(this.appState.searchBookId);
+	        const data = await fetch(`https:openlibrary.org/books/${this.appState.searchBookId}.json`);
+	        return data.json()
+	    }
+
+
+	    render() {
+	        this.app.innerHTML = "";
+	        const main = document.createElement("div");
+	        main.innerHTML = `<h1>
+        ${this.state.isLoading ? "Загрузка..." : this.state.book.title ?? "О книге"} 
+        </h1>
+        Описание :
+        ${this.state.book.description}
+        `;
+	        
+	        this.renderHaeder();
+	        this.app.append(main);
+	    }
+
+	    renderHaeder() {
+	        const header = new Header(this.appState).render();
+	        this.app.prepend(header);
+	    }
+	}
+
 	class App {
 
 	    routes = [
@@ -1410,20 +1537,25 @@
 	        {
 	            path: "#favorites",
 	            page: Favorites,
+	        },
+	        {
+	            path: "#AbautPage",
+	            page: AbautPage,
 	        }
 	    ]
 
 	    appState = {
-	        favorites: []
+	        favorites: this.#getFavorites() ?? [],
+	        searchBookId: 2,
 	    }
 
 		constructor () {
+	        console.log(this.appState.favorites);
 	        window.addEventListener("hashchange", this.route.bind(this));
 	        this.route();
 		}
 
 	    route () {
-
 	        const page = this.routes.find((route)=> route.path === location.hash)?.page;
 	        if (!page) {
 	        this.currentPage = new NotFoundPage();
@@ -1431,8 +1563,17 @@
 	        return
 	        }
 	        this.currentPage = new page(this.appState);
-	        this.currentPage.render() ;
+	        this.currentPage.render();
 	    }
+
+	    
+	    #getFavorites() {
+	        const key = "Alex";     
+	        console.log(JSON.parse(localStorage.getItem(key)));
+	        return JSON.parse(localStorage.getItem(key)) 
+	    }
+
+
 	}
 
 	new App ();
